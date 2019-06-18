@@ -118,7 +118,7 @@ list($active) = mysqli_fetch_row($rs_active);
 <title>Administration Main Page</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link href="styles.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+<script language="JavaScript" type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
 
 </head>
 

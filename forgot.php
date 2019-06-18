@@ -74,7 +74,7 @@ $msg[] = "Your account password has been reset and a new password has been sent 
 <head>
 <title>Forgot Password</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<script language="JavaScript" type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+<script language="JavaScript" type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
 <script language="JavaScript" type="text/javascript" src="js/jquery.validate.js"></script>
   <script>
   $(document).ready(function(){
