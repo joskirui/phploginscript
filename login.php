@@ -40,16 +40,16 @@ if (strpos($user_email,'@') === false) {
 }
 
 	
-$result = mysql_query("SELECT `id`,`pwd`,`full_name`,`approved`,`user_level` FROM users WHERE 
+$result = mysqli_query($link,"SELECT `id`,`pwd`,`full_name`,`approved`,`user_level` FROM users WHERE 
            $user_cond
 			AND `banned` = '0'
-			") or die (mysql_error()); 
-$num = mysql_num_rows($result);
+			") or die (mysqli_error($link)); 
+$num = mysqli_num_rows($result);
 
   // Match row found with more than 1 results  - the user is authenticated. 
     if ( $num > 0 ) { 
 	
-	list($id,$pwd,$full_name,$approved,$user_level) = mysql_fetch_row($result);
+	list($id,$pwd,$full_name,$approved,$user_level) = mysqli_fetch_row($result);
 	
 	if(!$approved) {
 	//$msg = urlencode("Account not activated. Please check your email for activation code");
@@ -76,7 +76,7 @@ $num = mysql_num_rows($result);
 		//update the timestamp and key for cookie
 		$stamp = time();
 		$ckey = GenKey();
-		mysql_query("update users set `ctime`='$stamp', `ckey` = '$ckey' where id='$id'") or die(mysql_error());
+		mysqli_query($link,"update users set `ctime`='$stamp', `ckey` = '$ckey' where id='$id'") or die(mysqli_error($link));
 		
 		//set a cookie 
 		

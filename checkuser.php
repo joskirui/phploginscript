@@ -6,7 +6,7 @@ foreach($_GET as $key => $value) {
 	$get[$key] = filter($value);
 }
 
-$user = mysql_real_escape_string($get['user']);
+$user = mysqli_real_escape_string($link,$get['user']);
 
 if(isset($get['cmd']) && $get['cmd'] == 'check') {
 
@@ -22,8 +22,8 @@ exit();
 
 
 
-$rs_duplicate = mysql_query("select count(*) as total from users where user_name='$user' ") or die(mysql_error());
-list($total) = mysql_fetch_row($rs_duplicate);
+$rs_duplicate = mysqli_query($link,"select count(*) as total from users where user_name='$user' ") or die(mysqli_error($link));
+list($total) = mysqli_fetch_row($rs_duplicate);
 
 	if ($total > 0)
 	{

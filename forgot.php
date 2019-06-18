@@ -20,8 +20,8 @@ $err[] = "ERROR - Please enter a valid email";
 $user_email = $data['user_email'];
 
 //check if activ code and user is valid as precaution
-$rs_check = mysql_query("select id from users where user_email='$user_email'") or die (mysql_error()); 
-$num = mysql_num_rows($rs_check);
+$rs_check = mysqli_query($link,"select id from users where user_email='$user_email'") or die (mysqli_error($link)); 
+$num = mysqli_num_rows($rs_check);
   // Match row found with more than 1 results  - the user is authenticated. 
     if ( $num <= 0 ) { 
 	$err[] = "Error - Sorry no such account exists or registered.";
@@ -36,8 +36,8 @@ $new_pwd = GenPwd();
 $pwd_reset = PwdHash($new_pwd);
 //$sha1_new = sha1($new);	
 //set update sha1 of new password + salt
-$rs_activ = mysql_query("update users set pwd='$pwd_reset' WHERE 
-						 user_email='$user_email'") or die(mysql_error());
+$rs_activ = mysqli_query($link,"update users set pwd='$pwd_reset' WHERE 
+						 user_email='$user_email'") or die(mysqli_error($link));
 						 
 $host  = $_SERVER['HTTP_HOST'];
 $host_upper = strtoupper($host);						 

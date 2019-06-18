@@ -23,13 +23,13 @@ Please complete wherever marked xxxxxxxxx
 Note: If you use cpanel, the name will be like account_database
 *************************************************************/
 
-define ("DB_HOST", "xxxxxx"); // set database host
-define ("DB_USER", "xxxxxx"); // set database user
-define ("DB_PASS","xxxxxxx"); // set database password
-define ("DB_NAME","xxxxxx"); // set database name
+define ("DB_HOST", "localhost"); // set database host
+define ("DB_USER", "root"); // set database user
+define ("DB_PASS","jkings"); // set database password
+define ("DB_NAME","phploginscript"); // set database name
 
-$link = mysql_connect(DB_HOST, DB_USER, DB_PASS) or die("Couldn't make connection.");
-$db = mysql_select_db(DB_NAME, $link) or die("Couldn't select database");
+$link = mysqli_connect(DB_HOST, DB_USER, DB_PASS) or die("Couldn't make connection.");
+$db = mysqli_select_db($link,DB_NAME) or die("Couldn't select database");
 
 /* Registration Type (Automatic or Manual) 
  1 -> Automatic Registration (Users will receive activation code and they will be automatically approved after clicking activation link)
@@ -84,8 +84,8 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['user_name']) )
 	/* we double check cookie expiry time against stored in database */
 	
 	$cookie_user_id  = filter($_COOKIE['user_id']);
-	$rs_ctime = mysql_query("select `ckey`,`ctime` from `users` where `id` ='$cookie_user_id'") or die(mysql_error());
-	list($ckey,$ctime) = mysql_fetch_row($rs_ctime);
+	$rs_ctime = mysqli_query($link,"select `ckey`,`ctime` from `users` where `id` ='$cookie_user_id'") or die(mysqli_error($link));
+	list($ckey,$ctime) = mysqli_fetch_row($rs_ctime);
 	// coookie expiry
 	if( (time() - $ctime) > 60*60*24*COOKIE_TIME_OUT) {
 
@@ -100,7 +100,7 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['user_name']) )
 		  $_SESSION['user_id'] = $_COOKIE['user_id'];
 		  $_SESSION['user_name'] = $_COOKIE['user_name'];
 		/* query user level from database instead of storing in cookies */	
-		  list($user_level) = mysql_fetch_row(mysql_query("select user_level from users where id='$_SESSION[user_id]'"));
+		  list($user_level) = mysqli_fetch_row(mysqli_query($link,"select user_level from users where id='$_SESSION[user_id]'"));
 
 		  $_SESSION['user_level'] = $user_level;
 		  $_SESSION['HTTP_USER_AGENT'] = md5($_SERVER['HTTP_USER_AGENT']);
@@ -119,12 +119,13 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['user_name']) )
 
 
 function filter($data) {
+  global $link;
 	$data = trim(htmlentities(strip_tags($data)));
 	
 	if (get_magic_quotes_gpc())
 		$data = stripslashes($data);
 	
-	$data = mysql_real_escape_string($data);
+	$data = mysqli_real_escape_string($link,$data);
 	
 	return $data;
 }
@@ -240,15 +241,16 @@ function GenKey($length = 7)
 function logout()
 {
 global $db;
+global $link;
 session_start();
 
-$sess_user_id = strip_tags(mysql_real_escape_string($_SESSION['user_id']));
-$cook_user_id = strip_tags(mysql_real_escape_string($_COOKIE['user_id']));
+$sess_user_id = strip_tags(mysqli_real_escape_string($link,$_SESSION['user_id']));
+$cook_user_id = strip_tags(mysqli_real_escape_string($link,$_COOKIE['user_id']));
 
 if(isset($sess_user_id) || isset($cook_user_id)) {
-mysql_query("update `users` 
+mysqli_query($link,"update `users` 
 			set `ckey`= '', `ctime`= '' 
-			where `id`='$sess_user_id' OR  `id` = '$cook_user_id'") or die(mysql_error());
+			where `id`='$sess_user_id' OR  `id` = '$cook_user_id'") or die(mysqli_error($link));
 }		
 
 /************ Delete the sessions****************/

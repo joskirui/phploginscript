@@ -93,8 +93,8 @@ This code does a second check on the server side if the email already exists. It
 queries the database and if it has any existing email it throws user email already exists
 *******************************************************************/
 
-$rs_duplicate = mysql_query("select count(*) as total from users where user_email='$usr_email' OR user_name='$user_name'") or die(mysql_error());
-list($total) = mysql_fetch_row($rs_duplicate);
+$rs_duplicate = mysqli_query($link,"select count(*) as total from users where user_email='$usr_email' OR user_name='$user_name'") or die(mysqli_error($link));
+list($total) = mysqli_fetch_row($rs_duplicate);
 
 if ($total > 0)
 {
@@ -115,10 +115,10 @@ $sql_insert = "INSERT into `users`
 			)
 			";
 			
-mysql_query($sql_insert,$link) or die("Insertion Failed:" . mysql_error());
-$user_id = mysql_insert_id($link);  
+mysqli_query($link,$sql_insert) or die("Insertion Failed:" . mysqli_error($link));
+$user_id = mysqli_insert_id($link);  
 $md5_id = md5($user_id);
-mysql_query("update users set md5_id='$md5_id' where id='$user_id'");
+mysqli_query($link,"update users set md5_id='$md5_id' where id='$user_id'");
 //	echo "<h3>Thank You</h3> We received your submission.";
 
 if($user_registration)  {

@@ -12,15 +12,15 @@ if($_POST['doUpdate'] == 'Update')
 {
 
 
-$rs_pwd = mysql_query("select pwd from users where id='$_SESSION[user_id]'");
-list($old) = mysql_fetch_row($rs_pwd);
+$rs_pwd = mysqli_query($link,"select pwd from users where id='$_SESSION[user_id]'");
+list($old) = mysqli_fetch_row($rs_pwd);
 $old_salt = substr($old,0,9);
 
 //check for old password in md5 format
 	if($old === PwdHash($_POST['pwd_old'],$old_salt))
 	{
 	$newsha1 = PwdHash($_POST['pwd_new']);
-	mysql_query("update users set pwd='$newsha1' where id='$_SESSION[user_id]'");
+	mysqli_query($link,"update users set pwd='$newsha1' where id='$_SESSION[user_id]'");
 	$msg[] = "Your new password is updated";
 	//header("Location: mysettings.php?msg=Your new password is updated");
 	} else
@@ -39,7 +39,7 @@ foreach($_POST as $key => $value) {
 }
 
 
-mysql_query("UPDATE users SET
+mysqli_query($link,"UPDATE users SET
 			`full_name` = '$data[name]',
 			`address` = '$data[address]',
 			`tel` = '$data[tel]',
@@ -47,13 +47,13 @@ mysql_query("UPDATE users SET
 			`country` = '$data[country]',
 			`website` = '$data[web]'
 			 WHERE id='$_SESSION[user_id]'
-			") or die(mysql_error());
+			") or die(mysqli_error($link));
 
 //header("Location: mysettings.php?msg=Profile Sucessfully saved");
 $msg[] = "Profile Sucessfully saved";
  }
  
-$rs_settings = mysql_query("select * from users where id='$_SESSION[user_id]'"); 
+$rs_settings = mysqli_query($link,"select * from users where id='$_SESSION[user_id]'"); 
 ?>
 <html>
 <head>
@@ -120,33 +120,33 @@ if (checkAdmin()) {
       </p>
       <p>Here you can make changes to your profile. Please note that you will 
         not be able to change your email which has been already registered.</p>
-	  <?php while ($row_settings = mysql_fetch_array($rs_settings)) {?>
+	  <?php while ($row_settings = mysqli_fetch_array($rs_settings)) {?>
       <form action="mysettings.php" method="post" name="myform" id="myform">
         <table width="90%" border="0" align="center" cellpadding="3" cellspacing="3" class="forms">
           <tr> 
-            <td colspan="2"> Your Name / Company Name<br> <input name="name" type="text" id="name"  class="required" value="<? echo $row_settings['full_name']; ?>" size="50"> 
+            <td colspan="2"> Your Name / Company Name<br> <input name="name" type="text" id="name"  class="required" value="<?php echo $row_settings['full_name']; ?>" size="50"> 
               <span class="example">Your name or company name</span></td>
           </tr>
           <tr> 
             <td colspan="2">Address <span class="example">(full address with ZIP)</span><br> 
-              <textarea name="address" cols="40" rows="4" class="required" id="address"><? echo $row_settings['address']; ?></textarea> 
+              <textarea name="address" cols="40" rows="4" class="required" id="address"><?php echo $row_settings['address']; ?></textarea> 
             </td>
           </tr>
           <tr> 
             <td>Country</td>
-            <td><input name="country" type="text" id="country" value="<? echo $row_settings['country']; ?>" ></td>
+            <td><input name="country" type="text" id="country" value="<?php echo $row_settings['country']; ?>" ></td>
           </tr>
           <tr> 
             <td width="27%">Phone</td>
-            <td width="73%"><input name="tel" type="text" id="tel" class="required" value="<? echo $row_settings['tel']; ?>"></td>
+            <td width="73%"><input name="tel" type="text" id="tel" class="required" value="<?php echo $row_settings['tel']; ?>"></td>
           </tr>
           <tr> 
             <td>Fax</td>
-            <td><input name="fax" type="text" id="fax" value="<? echo $row_settings['fax']; ?>"></td>
+            <td><input name="fax" type="text" id="fax" value="<?php echo $row_settings['fax']; ?>"></td>
           </tr>
           <tr> 
             <td>Website</td>
-            <td><input name="web" type="text" id="web" class="optional defaultInvalid url" value="<? echo $row_settings['website']; ?>"> 
+            <td><input name="web" type="text" id="web" class="optional defaultInvalid url" value="<?php echo $row_settings['website']; ?>"> 
               <span class="example">Example: http://www.domain.com</span></td>
           </tr>
           <tr> 
@@ -155,11 +155,11 @@ if (checkAdmin()) {
           </tr>
           <tr> 
             <td>User Name</td>
-            <td><input name="user_name" type="text" id="web2" value="<? echo $row_settings['user_name']; ?>" disabled></td>
+            <td><input name="user_name" type="text" id="web2" value="<?php echo $row_settings['user_name']; ?>" disabled></td>
           </tr>
           <tr> 
             <td>Email</td>
-            <td><input name="user_email" type="text" id="web3"  value="<? echo $row_settings['user_email']; ?>" disabled></td>
+            <td><input name="user_email" type="text" id="web3"  value="<?php echo $row_settings['user_email']; ?>" disabled></td>
           </tr>
         </table>
         <p align="center"> 
